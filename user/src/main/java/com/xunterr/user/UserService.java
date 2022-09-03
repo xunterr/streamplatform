@@ -1,12 +1,13 @@
 package com.xunterr.user;
 
-import com.xunterr.user.exception.UserNotFoundException;
+import com.xunterr.user.exception.AlreadyTakenException;
+import com.xunterr.user.exception.EntityNotFoundException;
 import com.xunterr.user.model.User;
 import com.xunterr.user.model.UserRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,11 +23,17 @@ public class UserService{
 
     public User getById(Long id) {
         Optional<User> user = repository.findById(id);
-        return user.orElseThrow(() -> new UserNotFoundException());
+        return user.orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
     }
 
 
     public void registerUser(UserRequest request) {
+        if(repository.findByUsername(request.username()).isPresent()){
+            throw new AlreadyTakenException("Username already taken");
+        }
+        if(repository.findByEmail(request.email()).isPresent()){
+            throw new AlreadyTakenException("Email already taken");
+        }
         User newUser = User.builder()
                 .username(request.username())
                 .email(request.email())
@@ -37,7 +44,7 @@ public class UserService{
 
     @Transactional
     public void updateUser(Long id, UserRequest request){
-        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException());
+        User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
         user.setUsername(request.username());
         user.setPassword(request.password());
         user.setEmail(request.email());
