@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("users")
 public record UserController (UserService userService) {
 
 
@@ -32,17 +32,17 @@ public record UserController (UserService userService) {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void registerUser(@Valid @RequestBody UserRequest request){
+    public void register(@Valid @RequestBody UserRequest request){
         userService.registerUser(request);
     }
 
     @PutMapping(path = "{id}")
-    public void updateUser(@PathVariable Long id, @RequestBody UserRequest request){
+    public void update(@PathVariable Long id, @RequestBody UserRequest request){
         userService.updateUser(id, request);
     }
 
     @DeleteMapping(path = "{id}")
-    public void deleteUser(@PathVariable Long id){
+    public void delete(@PathVariable Long id){
         userService.deleteById(id);
     }
 
