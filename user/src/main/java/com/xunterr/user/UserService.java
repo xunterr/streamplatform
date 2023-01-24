@@ -38,6 +38,7 @@ public class UserService{
                 .username(request.username())
                 .email(request.email())
                 .password(request.password())
+                .streamKey(request.streamKey())
                 .build();
         repository.save(newUser);
     }

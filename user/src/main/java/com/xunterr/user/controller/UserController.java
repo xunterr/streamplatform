@@ -4,30 +4,43 @@ import com.xunterr.user.UserService;
 import com.xunterr.user.model.User;
 import com.xunterr.user.model.UserRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("users")
-public record UserController (UserService userService) {
+@RequestMapping("api/v1/users")
+public class UserController {
+    
+    @Autowired
+    UserService userService;
 
+    @Value("${eureka.client.serviceUrl.defaultZone}")
+    private String eurekaUrl;
 
     @GetMapping
     public List<User> getAll(){
         return userService.getAll();
     }
 
+    @GetMapping("/eureka")
+    public String getEureka(){
+        return eurekaUrl;
+    }
+
     @GetMapping("/{id}")
     public User get(@PathVariable Long id){
         return userService.getById(id);
+    }
+
+    @GetMapping("/{id}/streamKey")
+    public String getStreamKey(@PathVariable Long id){
+        return userService.getById(id).getStreamKey();
     }
 
     @PostMapping

@@ -19,7 +19,4 @@ public class StreamRequest{
 
 	@NotBlank(message = "Description must not be null")
 	String description;
-
-	@NotBlank(message = "Stream key must not be null")
-	String streamKey;
 }

@@ -1,5 +1,6 @@
 package com.xunterr.stream.service;
 
+import com.xunterr.stream.client.UserClient;
 import com.xunterr.stream.exception.EntityNotFoundException;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.model.StreamRequest;
@@ -14,6 +15,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class StreamService {
 	StreamRepository repository;
+	UserClient userClient;
 
 	public List<Stream> getAll(){
 		return repository.findAll();
@@ -33,7 +35,7 @@ public class StreamService {
 				.title(request.getTitle())
 				.description(request.getDescription())
 				.uid(request.getUid())
-				.streamKey(request.getStreamKey())
+				.streamKey(userClient.getStreamKey(request.getUid()))
 				.build();
 
 		return repository.saveAndFlush(stream);

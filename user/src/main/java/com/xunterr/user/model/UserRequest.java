@@ -12,6 +12,9 @@ public record UserRequest(
         String email,
 
         @NotBlank(message = "password cannot be blank")
-        String password
+        String password,
+
+        @NotBlank
+        String streamKey
 ) {
 }
