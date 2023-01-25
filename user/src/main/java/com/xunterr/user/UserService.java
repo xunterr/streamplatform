@@ -3,7 +3,8 @@ package com.xunterr.user;
 import com.xunterr.user.exception.AlreadyTakenException;
 import com.xunterr.user.exception.EntityNotFoundException;
 import com.xunterr.user.model.User;
-import com.xunterr.user.model.UserRequest;
+import com.xunterr.user.model.UserDTO;
+import com.xunterr.user.model.UserDTOMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,18 +17,24 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserService{
     UserRepository repository;
+    UserDTOMapper userDTOMapper;
 
-    public List<User> getAll(){
-        return repository.findAll();
+    public List<UserDTO> getAll(){
+        return repository.findAll()
+                .stream()
+                .map(userDTOMapper)
+                .toList();
     }
 
-    public User getById(Long id) {
-        Optional<User> user = repository.findById(id);
-        return user.orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
+    public UserDTO getById(Long id) {
+        return repository.findById(id)
+                .map(userDTOMapper)
+                .orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
     }
 
 
-    public void registerUser(UserRequest request) {
+
+    public void registerUser(UserDTO request) {
         if(repository.findByUsername(request.username()).isPresent()){
             throw new AlreadyTakenException("Username already taken");
         }
@@ -37,18 +44,19 @@ public class UserService{
         User newUser = User.builder()
                 .username(request.username())
                 .email(request.email())
-                .password(request.password())
+                .password(null)
                 .streamKey(request.streamKey())
                 .build();
         repository.save(newUser);
     }
 
     @Transactional
-    public void updateUser(Long id, UserRequest request){
+    public void updateUser(Long id, UserDTO request){
         User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
         user.setUsername(request.username());
-        user.setPassword(request.password());
+        user.setPassword(null);
         user.setEmail(request.email());
+        user.setStreamKey(request.streamKey());
     }
 
     public void deleteById(Long id){

@@ -1,9 +1,11 @@
 package com.xunterr.stream.controller;
 
+import com.xunterr.stream.model.StreamEvent;
 import com.xunterr.stream.service.StreamService;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class StreamEventsController {
 	private StreamService service;
 
-	@PostMapping("/on-publish")
-	public void onPublish(@RequestBody String name){
-		service.onPublishEvent(name);
+	@PostMapping(
+			path = "/on-publish",
+			consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+	public void onPublish(StreamEvent event){
+		service.onPublishEvent(event.name());
 	}
 
 	@ExceptionHandler(IllegalStateException.class)

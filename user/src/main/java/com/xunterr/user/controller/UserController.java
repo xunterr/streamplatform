@@ -2,7 +2,7 @@ package com.xunterr.user.controller;
 
 import com.xunterr.user.UserService;
 import com.xunterr.user.model.User;
-import com.xunterr.user.model.UserRequest;
+import com.xunterr.user.model.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,33 +24,28 @@ public class UserController {
     private String eurekaUrl;
 
     @GetMapping
-    public List<User> getAll(){
+    public List<UserDTO> getAll(){
         return userService.getAll();
     }
 
-    @GetMapping("/eureka")
-    public String getEureka(){
-        return eurekaUrl;
-    }
-
     @GetMapping("/{id}")
-    public User get(@PathVariable Long id){
+    public UserDTO get(@PathVariable Long id){
         return userService.getById(id);
     }
 
-    @GetMapping("/{id}/streamKey")
+    @GetMapping("/{id}/stream-key")
     public String getStreamKey(@PathVariable Long id){
-        return userService.getById(id).getStreamKey();
+        return userService.getById(id).streamKey();
     }
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void register(@Valid @RequestBody UserRequest request){
+    public void register(@Valid @RequestBody UserDTO request){
         userService.registerUser(request);
     }
 
     @PutMapping(path = "{id}")
-    public void update(@PathVariable Long id, @RequestBody UserRequest request){
+    public void update(@PathVariable Long id, @RequestBody UserDTO request){
         userService.updateUser(id, request);
     }
 

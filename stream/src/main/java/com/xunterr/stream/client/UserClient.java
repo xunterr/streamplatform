@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(name = "user")
 public interface UserClient {
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}/streamKey")
+	@RequestMapping(method = RequestMethod.GET, value = "api/v1/users/{id}/stream-key")
 	String getStreamKey(@PathVariable(value = "id") Long id);
 
 }
