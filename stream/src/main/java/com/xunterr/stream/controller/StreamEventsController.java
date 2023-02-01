@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/events")
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class StreamEventsController {
 			path = "/on-publish",
 			consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
 	public void onPublish(StreamEvent event){
-		service.onPublishEvent(event.name());
+		service.getById(UUID.fromString(event.name()));
 	}
 
 	@ExceptionHandler(IllegalStateException.class)

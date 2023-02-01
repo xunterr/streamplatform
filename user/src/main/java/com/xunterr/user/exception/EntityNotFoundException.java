@@ -2,12 +2,14 @@ package com.xunterr.user.exception;
 
 import lombok.Getter;
 
+import java.util.UUID;
+
 public class EntityNotFoundException extends RuntimeException{
 
     @Getter
-    private Long id;
+    private UUID id;
 
-    public EntityNotFoundException(Long id, String message){
+    public EntityNotFoundException(UUID id, String message){
         super(message);
         this.id = id;
     }

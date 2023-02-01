@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -18,19 +19,11 @@ import java.time.Instant;
 @Table(name = "stream")
 public class Stream {
 	@Id
-	@SequenceGenerator(
-			name = "stream_id_sequence",
-			sequenceName = "stream_id_sequence",
-			initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stream_id_sequence")
-	@Column(name = "id", nullable = false)
-	private Long id;
+	@GeneratedValue
+	private UUID id;
 
-	@Column(name = "stream_key", nullable = false, unique = true)
-	private String streamKey;
-
-	@Column(nullable = false)
-	private Long uid;
+	@Column(nullable = false, unique = true)
+	private UUID userID;
 
 	@CreatedDate
 	private Instant createdDate;

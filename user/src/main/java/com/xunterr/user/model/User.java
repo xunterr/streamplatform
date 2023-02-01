@@ -6,25 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "customer")
+@Table(name = "users")
 public class User {
         @Id
-        @SequenceGenerator(
-                name = "user_id_sequence",
-                sequenceName = "user_id_sequence",
-                initialValue = 1, allocationSize = 1)
-        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_sequence")
-        @Column(name = "id", nullable = false)
-        private Long id;
+        @GeneratedValue
+        private UUID id;
 
         private String username;
         private String email;
         private String password;
-        private String streamKey;
 }

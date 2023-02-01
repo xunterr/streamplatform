@@ -7,10 +7,10 @@ import com.xunterr.user.model.UserDTO;
 import com.xunterr.user.model.UserDTOMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -26,40 +26,36 @@ public class UserService{
                 .toList();
     }
 
-    public UserDTO getById(Long id) {
+    public UserDTO getById(UUID id) {
         return repository.findById(id)
                 .map(userDTOMapper)
                 .orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
     }
 
 
-
     public void registerUser(UserDTO request) {
-        if(repository.findByUsername(request.username()).isPresent()){
+        if(repository.findByUsername(request.getUsername()).isPresent()){
             throw new AlreadyTakenException("Username already taken");
         }
-        if(repository.findByEmail(request.email()).isPresent()){
+        if(repository.findByEmail(request.getEmail()).isPresent()){
             throw new AlreadyTakenException("Email already taken");
         }
         User newUser = User.builder()
-                .username(request.username())
-                .email(request.email())
+                .username(request.getUsername())
+                .email(request.getEmail())
                 .password(null)
-                .streamKey(request.streamKey())
                 .build();
         repository.save(newUser);
     }
 
-    @Transactional
-    public void updateUser(Long id, UserDTO request){
+    public void updateUser(UUID id, UserDTO request){
         User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
-        user.setUsername(request.username());
+        user.setUsername(request.getUsername());
         user.setPassword(null);
-        user.setEmail(request.email());
-        user.setStreamKey(request.streamKey());
+        user.setEmail(request.getEmail());
     }
 
-    public void deleteById(Long id){
+    public void deleteById(UUID id){
         Optional<User> user = repository.findById(id);
         repository.delete(user.orElseThrow(() -> new EntityNotFoundException(id, "User not found")));
     }

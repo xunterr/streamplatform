@@ -3,49 +3,40 @@ package com.xunterr.stream.service;
 import com.xunterr.stream.client.UserClient;
 import com.xunterr.stream.exception.EntityNotFoundException;
 import com.xunterr.stream.model.Stream;
-import com.xunterr.stream.model.StreamRequest;
+import com.xunterr.stream.model.StreamDTO;
+import com.xunterr.stream.model.StreamDTOMapper;
 import com.xunterr.stream.repository.StreamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class StreamService {
 	StreamRepository repository;
 	UserClient userClient;
+	StreamDTOMapper streamDTOMapper;
 
-	public List<Stream> getAll(){
-		return repository.findAll();
+	public List<StreamDTO> getAll(){
+		return repository.findAll()
+				.stream().map(streamDTOMapper)
+				.toList();
 	}
 
-	public Stream getById(Long id){
-		return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, "Stream not found"));
+	public StreamDTO getById(UUID id){
+		Stream stream = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, "Stream not found"));
+		return new StreamDTO(stream);
 	}
 
-	public Stream getByKey(String key){
-		return repository.findByStreamKey(key).orElseThrow(() -> new EntityNotFoundException("Stream not found"));
-	}
-
-	public Stream create(StreamRequest request){
-
+	public StreamDTO create(StreamDTO request) {
 		Stream stream = Stream.builder()
 				.title(request.getTitle())
 				.description(request.getDescription())
-				.uid(request.getUid())
-				.streamKey(userClient.getStreamKey(request.getUid()))
+				.userID(request.getUid())
 				.build();
 
-		return repository.saveAndFlush(stream);
+		return new StreamDTO(repository.saveAndFlush(stream));
 	}
-
-	public void onPublishEvent(String streamKey){
-		Optional<Stream> stream = repository.findByStreamKey(streamKey);
-		if(stream.isEmpty()){
-			throw new IllegalStateException("Stream does not exists");
-		}
-	}
-
 }
