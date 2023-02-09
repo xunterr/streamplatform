@@ -13,12 +13,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StreamDTO {
-	@JsonIgnore
 	@NotNull
 	UUID id;
 
 	@NotNull
-	UUID uid;
+	UUID userId;
 
 	@NotBlank(message = "Title must not be null")
 	String title;

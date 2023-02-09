@@ -26,7 +26,8 @@ public class StreamService {
 	}
 
 	public StreamDTO getById(UUID id){
-		Stream stream = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, "Stream not found"));
+		Stream stream = repository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException(id, "Stream not found"));
 		return new StreamDTO(stream);
 	}
 
@@ -34,7 +35,7 @@ public class StreamService {
 		Stream stream = Stream.builder()
 				.title(request.getTitle())
 				.description(request.getDescription())
-				.userID(request.getUid())
+				.userID(request.getUserId())
 				.build();
 
 		return new StreamDTO(repository.saveAndFlush(stream));
