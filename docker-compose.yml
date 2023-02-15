@@ -29,10 +29,17 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-  user:
-    image: 'userservice:latest'
+  api-gateway:
+    image: 'apigateway:latest'
     ports:
       - "8080:8080"
+    container_name: api-gateway
+    networks:
+      - spring
+    depends_on:
+      - eureka
+  user:
+    image: 'userservice:latest'
     container_name: user
     environment:
       # - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
@@ -48,8 +55,6 @@ services:
       - eureka
   stream:
     image: 'streamservice:latest'
-    ports:
-      - "8085:8080"
     container_name: stream
     environment:
       # - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
@@ -62,7 +67,7 @@ services:
       - postgres
     depends_on:
       - postgres
-      - user
+      - eureka
   rtmp:
     image: 'nginx-rtmp-module:latest'
     entrypoint: ["nginx", "-g", "daemon off;"]

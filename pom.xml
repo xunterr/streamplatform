@@ -12,6 +12,7 @@
     <module>user</module>
     <module>eureka-server</module>
     <module>stream</module>
+	  <module>api-gateway</module>
   </modules>
 
   <properties>
