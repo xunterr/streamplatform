@@ -3,10 +3,10 @@ package com.xunterr.stream.controller;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.model.StreamDTO;
 import com.xunterr.stream.service.StreamService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 

@@ -7,11 +7,11 @@ import java.util.UUID;
 public class EntityNotFoundException extends RuntimeException{
 
     @Getter
-    private UUID id;
+    private Object request;
 
-    public EntityNotFoundException(UUID id, String message){
+    public EntityNotFoundException(Object request, String message){
         super(message);
-        this.id = id;
+        this.request = request;
     }
     public EntityNotFoundException(String message, Throwable cause) {
         super(message, cause);

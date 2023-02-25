@@ -1,5 +1,6 @@
-package com.xunterr.user.model;
+package com.xunterr.user.service;
 
+import com.xunterr.user.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

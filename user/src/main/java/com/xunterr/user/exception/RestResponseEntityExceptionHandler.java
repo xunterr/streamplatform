@@ -1,9 +1,12 @@
 package com.xunterr.user.exception;
 
-import com.xunterr.user.model.Response;
+import com.xunterr.user.controller.Response;
+import jakarta.annotation.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.NonNullApi;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,7 +35,7 @@ public class RestResponseEntityExceptionHandler
     @ExceptionHandler(value = { EntityNotFoundException.class })
     protected ResponseEntity<?> handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
         Map<String, Object> error = new HashMap<>();
-        error.put("id", ex.getId());
+        error.put("id", ex.getRequest());
         error.put("error", ex.getMessage());
         return handleExceptionInternal(
                 ex, new Response(false, error),
@@ -43,8 +46,9 @@ public class RestResponseEntityExceptionHandler
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
-            HttpHeaders headers, HttpStatus status, WebRequest request){
-
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
         Map<String, Object> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();

@@ -1,4 +1,4 @@
-package com.xunterr.user;
+package com.xunterr.user.repository;
 
 import com.xunterr.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

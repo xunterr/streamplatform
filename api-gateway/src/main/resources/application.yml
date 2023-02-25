@@ -6,11 +6,16 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
       routes:
         - id: user
-          uri: lb://user
+          uri: lb://user/
           predicates:
             - Path=/api/v1/users/**
+            - Path=/api/v1/auth/**
         - id: stream
           uri: lb://stream
           predicates:

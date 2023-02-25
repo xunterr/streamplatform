@@ -12,15 +12,15 @@
     <module>user</module>
     <module>eureka-server</module>
     <module>stream</module>
-	  <module>api-gateway</module>
+    <module>api-gateway</module>
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
-    <spring.boot.version>2.7.3</spring.boot.version>
-    <spring.cloud.version>2021.0.5</spring.cloud.version>
+    <spring.boot.version>3.0.0</spring.boot.version>
+    <spring.cloud.version>2022.0.0-RC2</spring.cloud.version>
   </properties>
 
   <dependencies>
@@ -91,5 +91,4 @@
       </snapshots>
     </repository>
   </repositories>
-
 </project>

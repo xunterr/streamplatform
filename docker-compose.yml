@@ -14,23 +14,9 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - pgadmin:/var/lib/pgadmin
 
-    ports:
-      - "5050:80"
-    networks:
-      - postgres
-    restart: unless-stopped
   api-gateway:
-    image: 'apigateway:latest'
+    image: 'xunterr/apigateway:latest'
     ports:
       - "8080:8080"
     container_name: api-gateway
@@ -38,11 +24,13 @@ services:
       - spring
     depends_on:
       - eureka
+
   user:
-    image: 'userservice:latest'
+    image: 'xunterr/userservice:latest'
     container_name: user
+    ports:
+      - "8087:8080"
     environment:
-      # - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/streamplatform
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=password
@@ -54,10 +42,11 @@ services:
       - postgres
       - eureka
   stream:
-    image: 'streamservice:latest'
+    image: 'xunterr/streamservice:latest'
+    ports:
+      - "8088:8080"
     container_name: stream
     environment:
-      # - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/streamplatform
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=password
@@ -69,7 +58,7 @@ services:
       - postgres
       - eureka
   rtmp:
-    image: 'nginx-rtmp-module:latest'
+    image: 'xunterr/nginx-rtmp-module:latest'
     entrypoint: ["nginx", "-g", "daemon off;"]
     ports:
       - "1935:1935"
@@ -81,10 +70,9 @@ services:
       - stream
 
   eureka:
-    image: 'eureka-server:latest'
+    image: 'xunterr/eureka-server:latest'
     ports:
       - "8761:8761"
-      - "80:8080"
     container_name: eureka
     hostname: eureka
     networks:

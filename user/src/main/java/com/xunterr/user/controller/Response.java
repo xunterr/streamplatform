@@ -1,4 +1,4 @@
-package com.xunterr.user.model;
+package com.xunterr.user.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

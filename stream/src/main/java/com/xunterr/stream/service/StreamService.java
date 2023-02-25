@@ -16,7 +16,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class StreamService {
 	StreamRepository repository;
-	UserClient userClient;
 	StreamDTOMapper streamDTOMapper;
 
 	public List<StreamDTO> getAll(){

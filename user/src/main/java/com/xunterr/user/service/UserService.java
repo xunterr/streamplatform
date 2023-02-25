@@ -1,11 +1,11 @@
-package com.xunterr.user;
+package com.xunterr.user.service;
 
+import com.xunterr.user.repository.UserRepository;
 import com.xunterr.user.exception.AlreadyTakenException;
 import com.xunterr.user.exception.EntityNotFoundException;
 import com.xunterr.user.model.User;
-import com.xunterr.user.model.UserDTO;
-import com.xunterr.user.model.UserDTOMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,22 +32,6 @@ public class UserService{
                 .orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
     }
 
-
-    public void registerUser(UserDTO request) {
-        if(repository.findByUsername(request.getUsername()).isPresent()){
-            throw new AlreadyTakenException("Username already taken");
-        }
-        if(repository.findByEmail(request.getEmail()).isPresent()){
-            throw new AlreadyTakenException("Email already taken");
-        }
-        User newUser = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(null)
-                .build();
-        repository.save(newUser);
-    }
-
     public void updateUser(UUID id, UserDTO request){
         User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
         user.setUsername(request.getUsername());
@@ -59,4 +43,14 @@ public class UserService{
         Optional<User> user = repository.findById(id);
         repository.delete(user.orElseThrow(() -> new EntityNotFoundException(id, "User not found")));
     }
+
+	public UserDTO search(UserDTO request) {
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .build();
+        User result = repository.findOne(Example.of(user))
+                .orElseThrow(() -> new EntityNotFoundException(request.getId(), "User not found"));
+        return new UserDTO(result);
+	}
 }

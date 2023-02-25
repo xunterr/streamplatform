@@ -1,14 +1,11 @@
 package com.xunterr.user.controller;
 
-import com.xunterr.user.UserService;
-import com.xunterr.user.model.UserDTO;
+import com.xunterr.user.service.UserService;
+import com.xunterr.user.service.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,9 +17,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Value("${eureka.client.serviceUrl.defaultZone}")
-    private String eurekaUrl;
-
     @GetMapping
     public List<UserDTO> getAll(){
         return userService.getAll();
@@ -33,11 +27,11 @@ public class UserController {
         return userService.getById(id);
     }
 
-    @PostMapping
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public void register(@Valid @RequestBody UserDTO request){
-        userService.registerUser(request);
+    @PostMapping("/query")
+    public UserDTO getByQuery(UserDTO userDTO){
+        return userService.search(userDTO);
     }
+
 
     @PutMapping(path = "{id}")
     public void update(@PathVariable UUID id, @RequestBody UserDTO request){
