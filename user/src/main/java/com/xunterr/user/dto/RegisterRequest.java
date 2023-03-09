@@ -1,4 +1,4 @@
-package com.xunterr.user.controller;
+package com.xunterr.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -1,5 +1,9 @@
 package com.xunterr.user.controller;
 
+import com.xunterr.user.dto.AuthenticationRequest;
+import com.xunterr.user.dto.AuthenticationResponse;
+import com.xunterr.user.dto.RegisterRequest;
+import com.xunterr.user.dto.TokenDetails;
 import com.xunterr.user.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
 	AuthenticationService authenticationService;
+
+	@GetMapping("/token/validate")
+	public TokenDetails validateToken(@RequestParam String token){
+		return authenticationService.isTokenValid(token);
+	}
 
 	@PostMapping("/register")
 	@ResponseStatus(code = HttpStatus.CREATED)

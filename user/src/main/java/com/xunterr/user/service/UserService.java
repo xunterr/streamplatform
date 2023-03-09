@@ -1,7 +1,7 @@
 package com.xunterr.user.service;
 
+import com.xunterr.user.dto.UserDTO;
 import com.xunterr.user.repository.UserRepository;
-import com.xunterr.user.exception.AlreadyTakenException;
 import com.xunterr.user.exception.EntityNotFoundException;
 import com.xunterr.user.model.User;
 import lombok.AllArgsConstructor;
@@ -37,6 +37,7 @@ public class UserService{
         user.setUsername(request.getUsername());
         user.setPassword(null);
         user.setEmail(request.getEmail());
+        repository.save(user);
     }
 
     public void deleteById(UUID id){

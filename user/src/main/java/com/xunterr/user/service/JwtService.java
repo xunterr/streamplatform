@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Slf4j
 public class JwtService {
 
-	@Value("${app.security.jwt.secret}")
+	@Value("${spring.security.jwt.secret}")
 	private String secretKey;
 
 	public boolean isTokenValid(String jwtToken, UserDetails user){
@@ -28,16 +28,18 @@ public class JwtService {
 	}
 
 	private boolean isTokenExpired(String jwtToken) {
-		return getClaim(jwtToken, Claims::getExpiration).before(new Date(System.currentTimeMillis()));
+		Date exp = getClaim(jwtToken, Claims::getExpiration);
+		log.info("::::EXPIRATION: " + exp);
+		return exp.before(new Date(System.currentTimeMillis()));
 	}
 
 	public String generateToken(Map<String, Object> claims, UserDetails user){
-		System.out.println("generate token");
+		log.info("::::::CURRENT DATE: " + new Date(System.currentTimeMillis()));
 		return Jwts.builder()
 				.setClaims(claims)
 				.setSubject(user.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() * 1000 * 60 * 60 * 60 * 24))
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
 				.signWith(getSigningKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
@@ -46,13 +48,14 @@ public class JwtService {
 		return getClaim(jwtToken, Claims::getSubject);
 	}
 
-	private <T> T getClaim(String jwtToken, Function<Claims, T> claimsResolver) {
+	public <T> T getClaim(String jwtToken, Function<Claims, T> claimsResolver) {
 		Claims claims = getClaims(jwtToken);
 		log.info(claims.getSubject());
+		log.info(claims.getExpiration().toString());
 		return claimsResolver.apply(claims);
 	}
 
-	private Claims getClaims(String jwtToken){
+	public Claims getClaims(String jwtToken){
 		return Jwts
 				.parserBuilder()
 				.setSigningKey(getSigningKey())

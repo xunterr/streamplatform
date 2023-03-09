@@ -1,7 +1,7 @@
 package com.xunterr.user.controller;
 
 import com.xunterr.user.service.UserService;
-import com.xunterr.user.service.UserDTO;
+import com.xunterr.user.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

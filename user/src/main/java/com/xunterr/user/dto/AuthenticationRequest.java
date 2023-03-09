@@ -1,4 +1,4 @@
-package com.xunterr.user.controller;
+package com.xunterr.user.dto;
 
 public record AuthenticationRequest(
 		String username,

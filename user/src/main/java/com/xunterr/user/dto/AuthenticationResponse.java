@@ -1,4 +1,4 @@
-package com.xunterr.user.controller;
+package com.xunterr.user.dto;
 
 public record AuthenticationResponse(
 		String token

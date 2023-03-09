@@ -1,7 +1,8 @@
 package com.xunterr.user.service;
 
-import com.xunterr.user.controller.AuthenticationRequest;
-import com.xunterr.user.controller.RegisterRequest;
+import com.xunterr.user.dto.AuthenticationRequest;
+import com.xunterr.user.dto.RegisterRequest;
+import com.xunterr.user.dto.TokenDetails;
 import com.xunterr.user.exception.AlreadyTakenException;
 import com.xunterr.user.exception.EntityNotFoundException;
 import com.xunterr.user.model.Role;
@@ -14,7 +15,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -54,5 +57,18 @@ public class AuthenticationService {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("authorities", "ROLE_USER");
 		return jwtService.generateToken(claims, user);
+	}
+
+	public TokenDetails isTokenValid(String token){
+		String username = jwtService.getUsername(token);
+		User user = repository.findByUsername(username)
+				.orElseThrow(()-> new EntityNotFoundException(jwtService.getUsername(token), "User Not Found"));
+
+		if(!jwtService.isTokenValid(token, user)){
+			throw new IllegalStateException("Token is not valid");
+		}
+		List<String> authorities = new ArrayList<>();
+		authorities.add(jwtService.getClaims(token).get("authorities").toString());
+		return new TokenDetails(username, authorities);
 	}
 }
