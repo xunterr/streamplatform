@@ -14,7 +14,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StreamDTO {
-	@NotNull
 	UUID id;
 
 	@NotNull

@@ -1,9 +1,6 @@
 package com.xunterr.user.controller;
 
-import com.xunterr.user.dto.AuthenticationRequest;
-import com.xunterr.user.dto.AuthenticationResponse;
-import com.xunterr.user.dto.RegisterRequest;
-import com.xunterr.user.dto.TokenDetails;
+import com.xunterr.user.dto.*;
 import com.xunterr.user.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +22,12 @@ public class AuthController {
 
 	@PostMapping("/register")
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public AuthenticationResponse register(@RequestBody RegisterRequest request){
-		return new AuthenticationResponse(authenticationService.register(request));
+	public UserDTO register(@RequestBody RegisterRequest request){
+		return authenticationService.register(request);
 	}
 
 	@PostMapping("/authenticate")
 	public AuthenticationResponse auth(@RequestBody AuthenticationRequest request){
-		return new AuthenticationResponse(authenticationService.authenticate(request));
+		return authenticationService.authenticate(request);
 	}
 }

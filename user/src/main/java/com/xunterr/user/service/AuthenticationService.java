@@ -1,8 +1,6 @@
 package com.xunterr.user.service;
 
-import com.xunterr.user.dto.AuthenticationRequest;
-import com.xunterr.user.dto.RegisterRequest;
-import com.xunterr.user.dto.TokenDetails;
+import com.xunterr.user.dto.*;
 import com.xunterr.user.exception.AlreadyTakenException;
 import com.xunterr.user.exception.EntityNotFoundException;
 import com.xunterr.user.model.Role;
@@ -30,7 +28,7 @@ public class AuthenticationService {
 	JwtService jwtService;
 	AuthenticationManager authenticationManager;
 
-	public String register(RegisterRequest request) {
+	public UserDTO register(RegisterRequest request) {
 		if(repository.findByUsername(request.username()).isPresent()){
 			throw new AlreadyTakenException("Username already taken");
 		}
@@ -45,10 +43,10 @@ public class AuthenticationService {
 				.build();
 		repository.saveAndFlush(user);
 
-		return jwtService.generateToken(new HashMap<>(), user);
+		return new UserDTO(user);
  	}
 
-	public String authenticate(AuthenticationRequest request) {
+	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.username(), request.password())
 		);
@@ -56,7 +54,7 @@ public class AuthenticationService {
 				.orElseThrow(()->new EntityNotFoundException(request.username(), "User Not Found"));
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("authorities", "ROLE_USER");
-		return jwtService.generateToken(claims, user);
+		return new AuthenticationResponse(user.getId(), jwtService.generateToken(claims, user));
 	}
 
 	public TokenDetails isTokenValid(String token){
@@ -69,6 +67,6 @@ public class AuthenticationService {
 		}
 		List<String> authorities = new ArrayList<>();
 		authorities.add(jwtService.getClaims(token).get("authorities").toString());
-		return new TokenDetails(username, authorities);
+		return new TokenDetails(user.getId(), authorities);
 	}
 }

@@ -13,15 +13,28 @@ spring:
           enabled: true
           lowerCaseServiceId: true
       routes:
-        - id: user
+        - id: users
           uri: lb://user/
           predicates:
             - Path=/api/v1/users/**
-            - Path=/api/v1/auth/**
-        - id: stream
+          filters:
+            - AuthenticationFilter
+
+        - id: auth
+          uri: lb://user/
+          predicates:
+          - Path=/api/v1/auth/**
+
+        - id: streams
           uri: lb://stream
           predicates:
             - Path=/api/v1/streams/**
+          filters:
+            - AuthenticationFilter
+
+        - id: events
+          uri: lb://stream
+          predicates:
             - Path=/api/v1/events/**
 eureka:
   client:
