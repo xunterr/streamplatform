@@ -4,6 +4,7 @@ import com.xunterr.user.service.UserService;
 import com.xunterr.user.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +24,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDTO get(@PathVariable UUID id){
-        return userService.getById(id);
+    @PreAuthorize("#id == authentication.principal")
+    public UserDTO get(@PathVariable String id){
+        return userService.getById(UUID.fromString(id));
     }
 
     @PostMapping("/query")
@@ -32,15 +34,15 @@ public class UserController {
         return userService.search(userDTO);
     }
 
-
     @PutMapping(path = "{id}")
-    public void update(@PathVariable UUID id, @RequestBody UserDTO request){
-        userService.updateUser(id, request);
+    @PreAuthorize("#id == authentication.principal")
+    public void update(@PathVariable String id, @RequestBody UserDTO request){
+        userService.updateUser(UUID.fromString(id), request);
     }
 
     @DeleteMapping(path = "{id}")
-    public void delete(@PathVariable UUID id){
-        userService.deleteById(id);
+    @PreAuthorize("#id == authentication.principal")
+    public void delete(@PathVariable String id){
+        userService.deleteById(UUID.fromString(id));
     }
-
 }

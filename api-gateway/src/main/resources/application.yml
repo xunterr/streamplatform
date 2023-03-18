@@ -17,8 +17,6 @@ spring:
           uri: lb://user/
           predicates:
             - Path=/api/v1/users/**
-          filters:
-            - AuthenticationFilter
 
         - id: auth
           uri: lb://user/
@@ -29,8 +27,6 @@ spring:
           uri: lb://stream
           predicates:
             - Path=/api/v1/streams/**
-          filters:
-            - AuthenticationFilter
 
         - id: events
           uri: lb://stream

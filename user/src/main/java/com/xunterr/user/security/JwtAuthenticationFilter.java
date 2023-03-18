@@ -1,6 +1,7 @@
 package com.xunterr.user.security;
 
 import com.xunterr.user.service.JwtService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +21,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @AllArgsConstructor
@@ -41,20 +46,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		jwt = authHeader.substring(7);
-		String username = jwtService.getUsername(jwt);
-		if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-			UserDetails user = userDetailsService.loadUserByUsername(username);
-			log.info("JwtFilter: Checking token '" + jwt + "'...");
-			if(jwtService.isTokenValid(jwt, user)){
-				log.info("JwtFilter: Token is valid");
-				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-						user,
-						null,
-						user.getAuthorities()
-				);
-				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				SecurityContextHolder.getContext().setAuthentication(authToken);
-			}
+		String sub = jwtService.getClaim(jwt, Claims::getSubject);
+		List<SimpleGrantedAuthority> authorities = Stream.of(jwtService.getClaim(jwt, (claims) -> claims.get("authorities")).toString())
+				.map(SimpleGrantedAuthority::new)
+				.toList();
+		if(sub != null && SecurityContextHolder.getContext().getAuthentication() == null){
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+					sub,
+					null,
+					authorities
+			);
+			authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			SecurityContextHolder.getContext().setAuthentication(authToken);
 		}
 		filterChain.doFilter(request, response);
 	}

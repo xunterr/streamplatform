@@ -7,9 +7,11 @@ import com.xunterr.user.model.Role;
 import com.xunterr.user.model.User;
 import com.xunterr.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class AuthenticationService {
 	@Autowired
@@ -47,26 +50,14 @@ public class AuthenticationService {
  	}
 
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
-		authenticationManager.authenticate(
+		Authentication auth = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.username(), request.password())
 		);
+		log.info(String.valueOf(auth.isAuthenticated()));
 		User user = repository.findByUsername(request.username())
 				.orElseThrow(()->new EntityNotFoundException(request.username(), "User Not Found"));
 		Map<String, Object> claims = new HashMap<>();
 		claims.put("authorities", "ROLE_USER");
 		return new AuthenticationResponse(user.getId(), jwtService.generateToken(claims, user));
-	}
-
-	public TokenDetails isTokenValid(String token){
-		String username = jwtService.getUsername(token);
-		User user = repository.findByUsername(username)
-				.orElseThrow(()-> new EntityNotFoundException(jwtService.getUsername(token), "User Not Found"));
-
-		if(!jwtService.isTokenValid(token, user)){
-			throw new IllegalStateException("Token is not valid");
-		}
-		List<String> authorities = new ArrayList<>();
-		authorities.add(jwtService.getClaims(token).get("authorities").toString());
-		return new TokenDetails(user.getId(), authorities);
 	}
 }

@@ -15,11 +15,6 @@ public class AuthController {
 
 	AuthenticationService authenticationService;
 
-	@GetMapping("/token/validate")
-	public TokenDetails validateToken(@RequestParam String token){
-		return authenticationService.isTokenValid(token);
-	}
-
 	@PostMapping("/register")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public UserDTO register(@RequestBody RegisterRequest request){

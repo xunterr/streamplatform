@@ -33,8 +33,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 			String authHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 			String jwtToken = authHeader.replace("Bearer", "");
 
-			String authUri = "http://user:8087/api/v1/auth/token/validate";
-
 			return webClientBuilder.build()
 					.get()
 					.uri("http://user:8087/api/v1/auth/token/validate?token=" + jwtToken)
