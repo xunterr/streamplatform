@@ -2,7 +2,7 @@ package com.xunterr.stream.controller;
 
 
 import com.xunterr.stream.exception.EntityNotFoundException;
-import com.xunterr.stream.model.StreamDTO;
+import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.model.StreamEvent;
 import com.xunterr.stream.service.StreamService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,9 +25,9 @@ public class StreamEventsController {
 			path = "/on-publish",
 			consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
 	public ResponseEntity<HttpHeaders> onPublish(StreamEvent event, HttpServletResponse httpResponse) {
-		StreamDTO stream = service.getById(UUID.fromString(event.name()));
+		Stream stream = service.getById(UUID.fromString(event.name()));
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Location", stream.getUserId().toString());
+		headers.add("Location", stream.getUserID().toString());
 		return new ResponseEntity<>(headers, HttpStatus.FOUND);
 	}
 

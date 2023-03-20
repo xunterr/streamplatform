@@ -24,8 +24,4 @@ public class StreamDTO {
 
 	@NotBlank(message = "Description must not be null")
 	String description;
-
-	public StreamDTO(Stream stream) {
-		this(stream.getId(), stream.getUserID(), stream.getTitle(), stream.getDescription());
-	}
 }

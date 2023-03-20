@@ -2,12 +2,19 @@ package com.xunterr.stream.model;
 
 import org.springframework.stereotype.Service;
 
-import java.util.function.Function;
 
 @Service
-public class StreamDTOMapper implements Function<Stream, StreamDTO> {
-	@Override
-	public StreamDTO apply(Stream stream) {
-		return new StreamDTO(stream);
+public class StreamDTOMapper {
+	public StreamDTO toDto(Stream stream) {
+		return new StreamDTO(stream.getId(), stream.getUserID(),
+				stream.getTitle(), stream.getDescription());
+	}
+
+	public Stream toStream(StreamDTO dto){
+		return Stream.builder()
+				.userID(dto.userId)
+				.title(dto.title)
+				.description(dto.description)
+				.build();
 	}
 }

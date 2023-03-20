@@ -1,10 +1,7 @@
 package com.xunterr.stream.service;
 
-import com.xunterr.stream.client.UserClient;
 import com.xunterr.stream.exception.EntityNotFoundException;
 import com.xunterr.stream.model.Stream;
-import com.xunterr.stream.model.StreamDTO;
-import com.xunterr.stream.model.StreamDTOMapper;
 import com.xunterr.stream.repository.StreamRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,27 +13,17 @@ import java.util.UUID;
 @AllArgsConstructor
 public class StreamService {
 	StreamRepository repository;
-	StreamDTOMapper streamDTOMapper;
 
-	public List<StreamDTO> getAll(){
-		return repository.findAll()
-				.stream().map(streamDTOMapper)
-				.toList();
+	public List<Stream> getAll(){
+		return repository.findAll();
 	}
 
-	public StreamDTO getById(UUID id){
-		Stream stream = repository.findById(id)
+	public Stream getById(UUID id){
+		return repository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException(id, "Stream not found"));
-		return new StreamDTO(stream);
 	}
 
-	public StreamDTO create(StreamDTO request) {
-		Stream stream = Stream.builder()
-				.title(request.getTitle())
-				.description(request.getDescription())
-				.userID(request.getUserId())
-				.build();
-
-		return new StreamDTO(repository.saveAndFlush(stream));
+	public Stream create(Stream stream) {
+		return repository.saveAndFlush(stream);
 	}
 }
