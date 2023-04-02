@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Component
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
 	@Value("${spring.security.jwt.secret}")
@@ -53,10 +55,10 @@ public class JwtFilter extends OncePerRequestFilter {
 				.getBody();
 
 		if(tokenDetails.getSubject() != null || tokenDetails.containsKey("authorities")){
-			List<SimpleGrantedAuthority> authorities = Stream.of(tokenDetails.get("authorities"))
-					.map(a -> new SimpleGrantedAuthority(a.toString()))
+			List<SimpleGrantedAuthority> authorities = Stream.of(tokenDetails.get("authorities").toString())
+					.map(SimpleGrantedAuthority::new)
 					.toList();
-
+			log.info(authorities.get(0).getAuthority());
 			return new UsernamePasswordAuthenticationToken(
 					tokenDetails.getSubject(),
 					null,

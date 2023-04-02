@@ -1,4 +1,4 @@
-package com.xunterr.stream.model;
+package com.xunterr.stream.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
@@ -8,12 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StreamDTO {
+public class StreamDTO implements Serializable {
 	UUID id;
 
 	@NotNull

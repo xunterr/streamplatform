@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -21,12 +22,12 @@ class StreamServiceTest {
 
     @Mock
     private StreamRepository repository;
+    @Mock
+    private KeyService keyService;
+
+    @InjectMocks
     private StreamService underTest;
 
-    @BeforeEach
-    void beforeEach() {
-        this.underTest = new StreamService(repository);
-    }
 
     @Test
     void canGetAll() {

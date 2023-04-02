@@ -43,8 +43,10 @@ class UserServiceTest {
     @Test
     void canGetById() {
         UUID id = UUID.randomUUID();
-        User user = new User(id, "Username",
-                "Email", "password", null);
+        User user = User.builder()
+                .username("Username")
+                .password("Password")
+                .build();
 
         given(repository.findById(id)).willReturn(Optional.of(user));
         User result = underTest.getById(id);
@@ -56,8 +58,10 @@ class UserServiceTest {
     @Test
     void whenUpdateUser_shouldUpdateUser() {
         UUID id = UUID.randomUUID();
-        User user = new User(id, "Username",
-                "Email", "password", null);
+        User user = User.builder()
+                .username("Username")
+                .password("Password")
+                .build();
 
         given(repository.findById(id)).willReturn(Optional.of(user));
         underTest.updateById(id, user);
@@ -68,8 +72,10 @@ class UserServiceTest {
     @Test
     void whenUpdateUser_userDoesNotExist_shouldThrowNotFound() {
         UUID id = UUID.randomUUID();
-        User user = new User(id, "Username",
-                "Email", "password", null);
+        User user = User.builder()
+                .username("Username")
+                .password("Password")
+                .build();
         assertThatThrownBy(() -> underTest.updateById(id, user))
                 .isInstanceOf(EntityNotFoundException.class);
     }
@@ -77,8 +83,10 @@ class UserServiceTest {
     @Test
     void whenDeleteById_shouldDeleteUser() {
         UUID id = UUID.randomUUID();
-        User user = new User(id, "Username",
-                "Email", "password", null);
+        User user = User.builder()
+                .username("Username")
+                .password("Password")
+                .build();
 
         given(repository.findById(id)).willReturn(Optional.of(user));
         underTest.deleteById(id);

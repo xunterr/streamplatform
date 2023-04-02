@@ -1,8 +1,9 @@
 package com.xunterr.stream.controller;
 
+import com.xunterr.stream.dto.CreateStreamDTO;
 import com.xunterr.stream.model.Stream;
-import com.xunterr.stream.model.StreamDTO;
-import com.xunterr.stream.model.StreamDTOMapper;
+import com.xunterr.stream.dto.StreamDTO;
+import com.xunterr.stream.dto.StreamDTOMapper;
 import com.xunterr.stream.service.StreamService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -34,10 +35,10 @@ public class StreamController {
 	}
 
 	@PostMapping
-	@PreAuthorize("hasRole('USER') and #stream.userId.toString() == authentication.principal")
-	public StreamDTO create(@Valid @RequestBody StreamDTO streamDto){
+	@PreAuthorize("#streamDto.userId.toString() == authentication.principal")
+	public CreateStreamDTO create(@Valid @RequestBody StreamDTO streamDto){
 		Stream toCreate = streamDTOMapper.toStream(streamDto);
 		Stream result = streamService.create(toCreate);
-		return streamDTOMapper.toDto(result);
+		return new CreateStreamDTO(result.getId(), result.getCreatedDate(), result.getStreamKey());
 	}
 }

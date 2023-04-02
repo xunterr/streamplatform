@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Map;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
@@ -46,7 +47,7 @@ class AuthenticationServiceTest {
         User user = User.builder()
                 .username("username")
                 .password("password")
-                .role(Role.USER)
+                .roles(List.of(Role.USER))
                 .build();
         AuthenticationRequest request = new AuthenticationRequest(
                 user.getUsername(),
@@ -74,7 +75,7 @@ class AuthenticationServiceTest {
         User user = User.builder()
                 .username("username")
                 .password("password")
-                .role(Role.USER)
+                .roles(List.of(Role.USER))
                 .build();
         AuthenticationRequest request = new AuthenticationRequest(
                 user.getUsername(),

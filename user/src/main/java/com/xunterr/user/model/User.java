@@ -1,10 +1,7 @@
 package com.xunterr.user.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,13 +24,16 @@ public class User implements UserDetails {
         private String username;
         private String email;
         private String password;
+        private boolean isLive;
 
         @Enumerated(EnumType.STRING)
-        private Role role;
+        private List<Role> roles;
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-                return List.of(new SimpleGrantedAuthority(role.name()));
+                return roles.stream()
+                        .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
+                        .toList();
         }
 
         @Override

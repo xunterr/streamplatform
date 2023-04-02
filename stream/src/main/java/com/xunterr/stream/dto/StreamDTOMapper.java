@@ -1,5 +1,7 @@
-package com.xunterr.stream.model;
+package com.xunterr.stream.dto;
 
+import com.xunterr.stream.dto.StreamDTO;
+import com.xunterr.stream.model.Stream;
 import org.springframework.stereotype.Service;
 
 
@@ -12,9 +14,9 @@ public class StreamDTOMapper {
 
 	public Stream toStream(StreamDTO dto){
 		return Stream.builder()
-				.userID(dto.userId)
-				.title(dto.title)
-				.description(dto.description)
+				.userID(dto.getUserId())
+				.title(dto.getTitle())
+				.description(dto.getDescription())
 				.build();
 	}
 }

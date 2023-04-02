@@ -7,6 +7,7 @@ import com.xunterr.user.repository.UserRepository;
 import com.xunterr.user.exception.EntityNotFoundException;
 import com.xunterr.user.model.User;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,11 @@ import java.util.UUID;
 
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class UserService{
-    UserRepository repository;
-    PasswordEncoder passwordEncoder;
+    private UserRepository repository;
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getAll(){
         return repository.findAll();
@@ -42,7 +44,8 @@ public class UserService{
                 .username(request.username())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.USER)
+                .isLive(false)
+                .roles(List.of(Role.USER))
                 .build();
         return repository.saveAndFlush(user);
     }
@@ -50,7 +53,6 @@ public class UserService{
     public void updateById(UUID id, User request){
         User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, "User not found"));
         user.setUsername(request.getUsername());
-        user.setPassword(null);
         user.setEmail(request.getEmail());
         repository.save(user);
     }
@@ -64,4 +66,10 @@ public class UserService{
         return repository.findOne(Example.of(request))
                 .orElseThrow(() -> new EntityNotFoundException(request.getId(), "User not found"));
 	}
+
+    public void setLive(UUID id, boolean state){
+        User user = getById(id);
+        user.setLive(state);
+        repository.save(user);
+    }
 }

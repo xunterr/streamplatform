@@ -33,4 +33,8 @@ public class Stream {
 
 	private String title;
 	private String description;
+	private String streamKey;
+
+	private boolean isLive;
+	private boolean autoDelete;
 }

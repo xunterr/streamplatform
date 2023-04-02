@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,9 @@ import java.util.Map;
 @Slf4j
 @AllArgsConstructor
 public class AuthenticationService {
-	JwtService jwtService;
-	AuthenticationManager authenticationManager;
-	UserDetailsService userDetailsService;
+	private JwtService jwtService;
+	private AuthenticationManager authenticationManager;
+	private UserDetailsService userDetailsService;
 
 	public AuthenticationResponse authenticate(AuthenticationRequest request) {
 		authenticationManager.authenticate(
@@ -27,7 +28,10 @@ public class AuthenticationService {
 		);
 		User user = (User) userDetailsService.loadUserByUsername(request.username());	//strange place
 		Map<String, Object> claims = new HashMap<>();
-		claims.put("authorities", user.getAuthorities());
+		claims.put("authorities", user.getAuthorities()
+				.stream()
+				.map(GrantedAuthority::getAuthority)
+				.toList());
 		return new AuthenticationResponse(user.getId(), jwtService.generateToken(claims, user));
 	}
 }
