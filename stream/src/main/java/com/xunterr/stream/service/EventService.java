@@ -17,13 +17,19 @@ public class EventService {
 
 	public String publish(String key){
 		Stream stream = streamService.getByStreamKey(key);
-		streamService.start(stream.getId());
+		if(stream.isAutoDelete()){
+			streamService.deleteById(stream.getId());
+		}
+		stream.setLive(false);
+		streamService.update(stream, stream.getId());
 		return stream.getId().toString();
 	}
 
 	public void finish(String key){
+		log.info("FINISHING...");
 		Stream stream = streamService.getByStreamKey(key);
-		streamService.stop(stream.getId());
+		stream.setLive(true);
+		streamService.update(stream, stream.getId());
 		producer.produceMessage(
 				new StreamEventMessage(stream.getId(), stream.getUserID(), MessageType.END)
 		);

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class StreamDTOMapper {
 	public StreamDTO toDto(Stream stream) {
 		return new StreamDTO(stream.getId(), stream.getUserID(),
-				stream.getTitle(), stream.getDescription());
+				stream.getTitle(), stream.getDescription(), stream.isAutoDelete());
 	}
 
 	public Stream toStream(StreamDTO dto){

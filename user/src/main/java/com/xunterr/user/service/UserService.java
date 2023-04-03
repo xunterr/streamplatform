@@ -44,7 +44,6 @@ public class UserService{
                 .username(request.username())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .isLive(false)
                 .roles(List.of(Role.USER))
                 .build();
         return repository.saveAndFlush(user);
@@ -66,10 +65,4 @@ public class UserService{
         return repository.findOne(Example.of(request))
                 .orElseThrow(() -> new EntityNotFoundException(request.getId(), "User not found"));
 	}
-
-    public void setLive(UUID id, boolean state){
-        User user = getById(id);
-        user.setLive(state);
-        repository.save(user);
-    }
 }

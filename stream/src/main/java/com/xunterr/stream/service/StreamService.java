@@ -1,8 +1,6 @@
 package com.xunterr.stream.service;
 
 import com.xunterr.stream.exception.EntityNotFoundException;
-import com.xunterr.stream.messaging.MessageType;
-import com.xunterr.stream.messaging.StreamEventMessage;
 import com.xunterr.stream.messaging.StreamMessageProducer;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.repository.StreamRepository;
@@ -41,27 +39,12 @@ public class StreamService {
 		return repository.saveAndFlush(stream);
 	}
 
+	public void  update(Stream stream, UUID id){
+		stream.setId(id);
+		repository.save(stream);
+	}
+
 	public void deleteById(UUID id){
 		repository.deleteById(id);
-	}
-
-	public void stop(UUID id){
-		Stream stream = getById(id);
-		if(stream.isAutoDelete()){
-			deleteById(stream.getId());
-		}
-		stream.setLive(false);
-		producer.produceMessage(
-				new StreamEventMessage(stream.getId(), stream.getUserID(), MessageType.END)
-		);
-	}
-
-	public void start(UUID id){
-		Stream stream = getById(id);
-		stream.setLive(true);
-
-		producer.produceMessage(
-				new StreamEventMessage(stream.getId(), stream.getUserID(), MessageType.START)
-		);
 	}
 }

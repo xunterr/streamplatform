@@ -25,4 +25,7 @@ public class StreamDTO implements Serializable {
 
 	@NotBlank(message = "Description must not be null")
 	String description;
+
+	@NotBlank
+	boolean autoDelete;
 }
