@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
-public class CreateStreamDTO implements Serializable {
+public class CreateStreamResponse implements Serializable {
 	private final UUID id;
 	private final Instant createdDate;
 	private final String streamKey;

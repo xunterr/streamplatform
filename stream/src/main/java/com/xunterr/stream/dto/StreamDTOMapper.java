@@ -11,12 +11,4 @@ public class StreamDTOMapper {
 		return new StreamDTO(stream.getId(), stream.getUserID(),
 				stream.getTitle(), stream.getDescription(), stream.isAutoDelete());
 	}
-
-	public Stream toStream(StreamDTO dto){
-		return Stream.builder()
-				.userID(dto.getUserId())
-				.title(dto.getTitle())
-				.description(dto.getDescription())
-				.build();
-	}
 }

@@ -23,7 +23,6 @@ services:
       - "15672:15672"
     networks:
       - spring
-
   api-gateway:
     image: 'xunterr/apigateway:latest'
     ports:

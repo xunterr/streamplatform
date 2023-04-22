@@ -1,5 +1,6 @@
-package com.xunterr.apigateway;
+package com.xunterr.apigateway.filter;
 
+import com.xunterr.apigateway.TokenDetails;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,11 +13,11 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
-public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
+public class AuthenticationGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthenticationGatewayFilterFactory.Config> {
 
 	private final WebClient.Builder webClientBuilder;
 
-	public AuthenticationFilter(WebClient.Builder webClientBuilder) {
+	public AuthenticationGatewayFilterFactory(WebClient.Builder webClientBuilder) {
 		super(Config.class);
 		this.webClientBuilder = webClientBuilder;
 	}
@@ -53,7 +54,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 		return response.setComplete();
 	}
 
-	public static class Config {
+	static class Config {
 
 	}
 }

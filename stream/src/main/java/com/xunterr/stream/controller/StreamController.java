@@ -1,6 +1,7 @@
 package com.xunterr.stream.controller;
 
-import com.xunterr.stream.dto.CreateStreamDTO;
+import com.xunterr.stream.dto.CreateStreamRequest;
+import com.xunterr.stream.dto.CreateStreamResponse;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.dto.StreamDTO;
 import com.xunterr.stream.dto.StreamDTOMapper;
@@ -36,9 +37,8 @@ public class StreamController {
 
 	@PostMapping
 	@PreAuthorize("#streamDto.userId.toString() == authentication.principal")
-	public CreateStreamDTO create(@Valid @RequestBody StreamDTO streamDto){
-		Stream toCreate = streamDTOMapper.toStream(streamDto);
-		Stream result = streamService.create(toCreate);
-		return new CreateStreamDTO(result.getId(), result.getCreatedDate(), result.getStreamKey());
+	public CreateStreamResponse create(@Valid @RequestBody CreateStreamRequest request){
+		Stream result = streamService.create(request);
+		return new CreateStreamResponse(result.getId(), result.getCreatedDate(), result.getStreamKey());
 	}
 }

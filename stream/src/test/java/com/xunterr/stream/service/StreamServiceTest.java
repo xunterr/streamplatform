@@ -1,8 +1,9 @@
 package com.xunterr.stream.service;
 
+import com.xunterr.stream.dto.CreateStreamRequest;
+import com.xunterr.stream.key.AESStreamKeyGenerator;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.repository.StreamRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -22,12 +23,13 @@ class StreamServiceTest {
 
     @Mock
     private StreamRepository repository;
+
     @Mock
-    private KeyService keyService;
+    private AESStreamKeyGenerator keyGenerator;
+
 
     @InjectMocks
     private StreamService underTest;
-
 
     @Test
     void canGetAll() {
@@ -38,11 +40,13 @@ class StreamServiceTest {
     @Test
     void canGetById() {
         UUID id = UUID.randomUUID();
-        Stream stream = Stream.builder()
-                .title("Test")
-                .description("Test")
-                .userID(UUID.randomUUID())
-                .build();
+        Stream stream = new Stream(
+                UUID.randomUUID(),
+                "Test",
+                "Test",
+                false,
+                new AESStreamKeyGenerator()
+        );
 
         given(repository.findById(id)).willReturn(Optional.of(stream));
         Stream actual = underTest.getById(id);
@@ -53,18 +57,18 @@ class StreamServiceTest {
 
     @Test
     void canCreate() {
-        Stream stream = Stream.builder()
-                .title("Test")
-                .description("Test")
-                .userID(UUID.randomUUID())
-                .build();
+        CreateStreamRequest request = new CreateStreamRequest(
+                UUID.randomUUID(),
+                "Test",
+                "Test",
+                false);
 
-        underTest.create(stream);
+        underTest.create(request);
 
         ArgumentCaptor<Stream> argumentCaptor = ArgumentCaptor.forClass(Stream.class);
         verify(repository).saveAndFlush(argumentCaptor.capture());
 
         Stream captured = argumentCaptor.getValue();
-        assertThat(captured).isEqualTo(stream);
+        assertThat(captured.getUserID()).isEqualTo(request.getUserID());
     }
 }

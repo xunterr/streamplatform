@@ -1,11 +1,11 @@
-package com.xunterr.stream.service;
+package com.xunterr.stream.key;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -14,8 +14,10 @@ import java.util.Base64;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class KeyService {
+public class AESStreamKeyGenerator implements StreamKeyGenerator {
 	private final static String CIPHER = "AES";
+
+	@Override
 	public String generateKey() {
 		SecureRandom rand = new SecureRandom();
 		KeyGenerator generator;
@@ -29,12 +31,8 @@ public class KeyService {
 		return getBase64FromKey(key);
 	}
 
-	private String getBase64FromKey(Key key){
+	public String getBase64FromKey(Key key) {
 		return Base64.getEncoder().encodeToString(key.getEncoded());
 	}
 
-	private Key getKeyFromBase64(String key){
-		byte[] decoded = Base64.getDecoder().decode(key);
-		return new SecretKeySpec(decoded, 0, decoded.length, CIPHER);
-	}
 }

@@ -8,6 +8,8 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      default-filters:
+        - name: "ResponseWrapper"
       discovery:
         locator:
           enabled: true

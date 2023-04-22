@@ -1,6 +1,8 @@
 package com.xunterr.stream.service;
 
+import com.xunterr.stream.dto.CreateStreamRequest;
 import com.xunterr.stream.exception.EntityNotFoundException;
+import com.xunterr.stream.key.AESStreamKeyGenerator;
 import com.xunterr.stream.messaging.StreamMessageProducer;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.repository.StreamRepository;
@@ -15,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class StreamService {
 	StreamRepository repository;
-	KeyService keyService;
+	AESStreamKeyGenerator keyGenerator;
 	StreamMessageProducer producer;
 
 	public List<Stream> getAll(){
@@ -32,11 +34,13 @@ public class StreamService {
 				.orElseThrow(() -> new EntityNotFoundException("Stream not found"));
 	}
 
-	public Stream create(Stream stream) {
-		stream.setStreamKey(keyService.generateKey());
-		stream.setLive(false);
-		stream.setCreatedDate(Instant.now());
-		return repository.saveAndFlush(stream);
+	public Stream create(CreateStreamRequest request) {
+		Stream newStream = new Stream(
+				request.getUserID(), request.getTitle(),
+				request.getDescription(), request.isAutoDelete(),
+				keyGenerator);
+
+		return repository.saveAndFlush(newStream);
 	}
 
 	public void  update(Stream stream, UUID id){
