@@ -1,5 +1,4 @@
-package com.xunterr.stream.dto;
-
+package com.xunterr.stream.service;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,25 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
-import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StreamDTO implements Serializable {
-	UUID id;
-
+public class CreateStreamRequest {
 	@NotNull
-	UUID userId;
+	public UUID userId;
 
 	@NotBlank(message = "Title must not be null")
-	String title;
+	public String title;
 
 	@NotBlank(message = "Description must not be null")
-	String description;
+	public String description;
 
-	@NotBlank
-	boolean autoDelete;
+	@NotNull
+	public boolean autoDelete;
 }

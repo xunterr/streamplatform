@@ -1,6 +1,5 @@
 package com.xunterr.stream.service;
 
-import com.xunterr.stream.dto.CreateStreamRequest;
 import com.xunterr.stream.key.AESStreamKeyGenerator;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.repository.StreamRepository;
@@ -27,7 +26,6 @@ class StreamServiceTest {
     @Mock
     private AESStreamKeyGenerator keyGenerator;
 
-
     @InjectMocks
     private StreamService underTest;
 
@@ -45,7 +43,7 @@ class StreamServiceTest {
                 "Test",
                 "Test",
                 false,
-                new AESStreamKeyGenerator()
+                keyGenerator
         );
 
         given(repository.findById(id)).willReturn(Optional.of(stream));
@@ -69,6 +67,6 @@ class StreamServiceTest {
         verify(repository).saveAndFlush(argumentCaptor.capture());
 
         Stream captured = argumentCaptor.getValue();
-        assertThat(captured.getUserID()).isEqualTo(request.getUserID());
+        assertThat(captured.getUserID()).isEqualTo(request.getUserId());
     }
 }

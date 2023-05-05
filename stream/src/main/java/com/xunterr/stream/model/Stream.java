@@ -21,7 +21,7 @@ public class Stream {
 	@GeneratedValue
 	private UUID id;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private UUID userID;
 
 	@CreatedDate

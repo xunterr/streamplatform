@@ -11,26 +11,24 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class EventService {
-	StreamService streamService;
-	StreamMessageProducer producer;
+public class ControlService {
+	private final StreamService streamService;
+	private final StreamMessageProducer messageProducer;
 
-	public String publish(String key){
-		Stream stream = streamService.getByStreamKey(key);
-		if(stream.isAutoDelete()){
-			streamService.deleteById(stream.getId());
-		}
-		stream.setLive(false);
-		streamService.update(stream, stream.getId());
+	public String start(String key){
+		Stream stream = streamService.updateLive(key, true);
+		messageProducer.produceMessage(
+				new StreamEventMessage(stream.getId(), stream.getUserID(), MessageType.START)
+		);
 		return stream.getId().toString();
 	}
 
 	public void finish(String key){
-		log.info("FINISHING...");
-		Stream stream = streamService.getByStreamKey(key);
-		stream.setLive(true);
-		streamService.update(stream, stream.getId());
-		producer.produceMessage(
+		Stream stream = streamService.updateLive(key, true);
+		if(stream.isAutoDelete()) {
+			streamService.deleteById(stream.getId());
+		}
+		messageProducer.produceMessage(
 				new StreamEventMessage(stream.getId(), stream.getUserID(), MessageType.END)
 		);
 	}

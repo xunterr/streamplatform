@@ -2,6 +2,7 @@ package com.xunterr.stream.messaging.rabbitmq;
 
 import com.xunterr.stream.messaging.MessageType;
 import com.xunterr.stream.messaging.StreamEventMessage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -22,11 +25,13 @@ class RabbitMQStreamMessageProducerTest {
 	RabbitTemplate rabbitTemplate;
 	@Mock
 	TopicExchange exchange;
-	@Mock
-	RabbitMQStreamTopicProvider topicProvider;
 
-	@InjectMocks
 	RabbitMQStreamMessageProducer underTest;
+
+	@BeforeEach
+	void setUp() {
+		this.underTest = new RabbitMQStreamMessageProducer(rabbitTemplate, exchange, new HashMap<>());
+	}
 
 	@Test
 	void whenProduceMessage_shouldProduceMessage() {

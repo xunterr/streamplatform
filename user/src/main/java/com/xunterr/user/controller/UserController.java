@@ -18,8 +18,8 @@ import java.util.UUID;
 @RequestMapping("api/v1/users")
 public class UserController {
 
-    UserService userService;
-    UserDTOMapper mapper;
+    private final UserService userService;
+    private final UserDTOMapper mapper;
 
     @GetMapping
     public List<UserDTO> getAll(){
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("#id == authentication.principal")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal")
     public UserDTO get(@PathVariable String id){
         User result = userService.getById(UUID.fromString(id));
         return mapper.toDto(result);
@@ -43,14 +43,14 @@ public class UserController {
     }
 
     @PutMapping(path = "{id}")
-    @PreAuthorize("#id == authentication.principal")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal")
     public void update(@PathVariable String id, @RequestBody UserDTO request){
         User user = mapper.toUser(request);
         userService.updateById(UUID.fromString(id), user);
     }
 
     @DeleteMapping(path = "{id}")
-    @PreAuthorize("#id == authentication.principal")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal")
     public void delete(@PathVariable String id){
         userService.deleteById(UUID.fromString(id));
     }

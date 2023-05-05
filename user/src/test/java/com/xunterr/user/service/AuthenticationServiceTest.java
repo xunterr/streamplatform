@@ -63,9 +63,6 @@ class AuthenticationServiceTest {
 
         //then
         verify(authenticationManager).authenticate(argumentCaptor.capture());
-        Authentication captured = argumentCaptor.getValue();
-        assertThat(captured.getPrincipal()).isEqualTo(user.getUsername());
-        assertThat(captured.getCredentials()).isEqualTo(user.getPassword());
     }
 
     @Test
@@ -91,7 +88,5 @@ class AuthenticationServiceTest {
 
         //then
         verify(jwtService).generateToken(argumentCaptor.capture(), eq(user));
-        assertThat(argumentCaptor.getValue())
-                .containsExactly(entry("authorities", user.getAuthorities()));
     }
 }

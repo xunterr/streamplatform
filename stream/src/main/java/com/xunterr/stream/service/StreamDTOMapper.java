@@ -1,6 +1,5 @@
-package com.xunterr.stream.dto;
+package com.xunterr.stream.service;
 
-import com.xunterr.stream.dto.StreamDTO;
 import com.xunterr.stream.model.Stream;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,12 @@
 package com.xunterr.user.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xunterr.user.exception.EntityNotFoundException;
 import com.xunterr.user.repository.UserRepository;
+import io.github.wimdeblauwe.errorhandlingspringbootstarter.UnauthorizedEntryPoint;
+import io.github.wimdeblauwe.errorhandlingspringbootstarter.mapper.ErrorCodeMapper;
+import io.github.wimdeblauwe.errorhandlingspringbootstarter.mapper.ErrorMessageMapper;
+import io.github.wimdeblauwe.errorhandlingspringbootstarter.mapper.HttpStatusMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,18 +34,27 @@ public class SecurityConfiguration {
 	private AuthenticationProvider authenticationProvider;
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+	public UnauthorizedEntryPoint unauthorizedEntryPoint(HttpStatusMapper httpStatusMapper,
+														 ErrorCodeMapper errorCodeMapper,
+														 ErrorMessageMapper errorMessageMapper,
+														 ObjectMapper objectMapper) {
+		return new UnauthorizedEntryPoint(httpStatusMapper, errorCodeMapper, errorMessageMapper, objectMapper);
+	}
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http, UnauthorizedEntryPoint unauthorizedEntryPoint) throws Exception{
 
 		http
-			.csrf().disable()
-			.authorizeHttpRequests()
-			.requestMatchers("/api/v1/auth/**").permitAll()
-			.anyRequest().authenticated()
-			.and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
-			.authenticationProvider(authenticationProvider)
-			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+				.csrf().disable()
+				.authorizeHttpRequests()
+				.requestMatchers("/api/v1/auth/**").permitAll()
+				.anyRequest().authenticated()
+				.and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.authenticationProvider(authenticationProvider)
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint);
 
 		return http.build();
 	}

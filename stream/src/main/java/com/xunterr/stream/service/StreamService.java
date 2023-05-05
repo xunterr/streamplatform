@@ -1,24 +1,23 @@
 package com.xunterr.stream.service;
 
-import com.xunterr.stream.dto.CreateStreamRequest;
+import com.xunterr.stream.exception.AlreadyExistsException;
 import com.xunterr.stream.exception.EntityNotFoundException;
 import com.xunterr.stream.key.AESStreamKeyGenerator;
 import com.xunterr.stream.messaging.StreamMessageProducer;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.repository.StreamRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class StreamService {
-	StreamRepository repository;
-	AESStreamKeyGenerator keyGenerator;
-	StreamMessageProducer producer;
+	private final StreamRepository repository;
+	private final AESStreamKeyGenerator keyGenerator;
 
 	public List<Stream> getAll(){
 		return repository.findAll();
@@ -34,18 +33,29 @@ public class StreamService {
 				.orElseThrow(() -> new EntityNotFoundException("Stream not found"));
 	}
 
-	public Stream create(CreateStreamRequest request) {
+	public Stream create(@Valid CreateStreamRequest request) {
+		if(repository.findByUserID(request.getUserId()).isPresent()){
+			throw new AlreadyExistsException("Stream with this userID already exists");
+		}
 		Stream newStream = new Stream(
-				request.getUserID(), request.getTitle(),
+				request.getUserId(), request.getTitle(),
 				request.getDescription(), request.isAutoDelete(),
 				keyGenerator);
 
 		return repository.saveAndFlush(newStream);
 	}
 
-	public void  update(Stream stream, UUID id){
-		stream.setId(id);
-		repository.save(stream);
+	public Stream update(UpdateStreamRequest request, UUID id){
+		Stream stream = getById(id);
+		stream.setTitle(request.getTitle());
+		stream.setDescription(request.getDescription());
+		return repository.saveAndFlush(stream);
+	}
+
+	public Stream updateLive(String streamKey, boolean live){
+		Stream stream = getByStreamKey(streamKey);
+		stream.setLive(live);
+		return repository.saveAndFlush(stream);
 	}
 
 	public void deleteById(UUID id){

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/auth")
 public class AuthController {
 
-	AuthenticationService authenticationService;
-	UserService userService;
-	UserDTOMapper mapper;
+	private final AuthenticationService authenticationService;
+	private final UserService userService;
+	private final UserDTOMapper mapper;
 
 	@PostMapping("/register")
 	@ResponseStatus(code = HttpStatus.CREATED)

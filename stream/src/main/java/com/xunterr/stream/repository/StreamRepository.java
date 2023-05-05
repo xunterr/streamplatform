@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface StreamRepository extends JpaRepository<Stream, UUID>{
 	Optional<Stream> findByStreamKey(String key);
+	Optional<Stream> findByUserID(UUID userID);
 }

@@ -21,6 +21,7 @@ import reactor.util.annotation.NonNull;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Component
@@ -60,7 +61,7 @@ public class JwtFilter extends OncePerRequestFilter {
 					.toList();
 			log.info(authorities.get(0).getAuthority());
 			return new UsernamePasswordAuthenticationToken(
-					tokenDetails.getSubject(),
+					UUID.fromString(tokenDetails.getSubject()),
 					null,
 					authorities
 			);

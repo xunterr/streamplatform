@@ -1,4 +1,4 @@
-package com.xunterr.stream.dto;
+package com.xunterr.stream.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
