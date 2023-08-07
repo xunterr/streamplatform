@@ -1,10 +1,15 @@
 package com.xunterr.stream.controller;
 
+import com.xunterr.stream.dto.StreamDTO;
+import com.xunterr.stream.dto.StreamDTOMapper;
 import com.xunterr.stream.model.Stream;
 import com.xunterr.stream.service.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.JwtClaimNames;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,11 +37,9 @@ public class StreamController {
 	}
 
 	@PostMapping
-	@PreAuthorize("hasRole('ROLE_ADMIN') " +
-			"or #request.userId == authentication.principal " +
-			"and hasPermission(#request.userId, 'create')")
-	public CreateStreamResponse create(@Valid @RequestBody CreateStreamRequest request){
-		Stream result = streamService.create(request);
+	public CreateStreamResponse create(@Valid @RequestBody CreateStreamRequest request, JwtAuthenticationToken token){
+		var id = UUID.fromString(token.getName());
+		Stream result = streamService.create(request, id);
 		return new CreateStreamResponse(result.getId(), result.getCreatedDate(), result.getStreamKey());
 	}
 
@@ -48,7 +51,7 @@ public class StreamController {
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#id, 'update')")
-	public void update(@PathVariable UUID id, UpdateStreamRequest request){
-		streamService.update(request, id);
+	public void update(@PathVariable UUID id, @Valid @RequestBody UpdateStreamRequest request){
+		streamService.updateInfo(request, id);
 	}
 }

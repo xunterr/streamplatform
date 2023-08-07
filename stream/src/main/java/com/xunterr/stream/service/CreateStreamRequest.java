@@ -12,9 +12,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateStreamRequest {
-	@NotNull
-	public UUID userId;
-
 	@NotBlank(message = "Title must not be null")
 	public String title;
 

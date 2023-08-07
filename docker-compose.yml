@@ -26,33 +26,39 @@ services:
   api-gateway:
     image: 'xunterr/apigateway:latest'
     ports:
-      - "8080:8080"
+      - "8081:8080"
     container_name: api-gateway
     networks:
       - spring
     depends_on:
       - eureka
 
-  user:
-    image: 'xunterr/userservice:latest'
-    container_name: user
+  keycloak:
+    image: 'xunterr/keycloak:latest'
     ports:
-      - "8087:8080"
+      - '8443:8443'
+      - '8080:8080'
+    container_name: keycloak-auth
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/streamplatform
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=password
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    networks:
-      - spring
-      - postgres
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/streamplatform
+      - KC_DB_USERNAME=admin
+      - KC_DB_PASSWORD=password
+      - KC_HOSTNAME=keycloak
     depends_on:
       - postgres
-      - eureka
+    networks:
+      - postgres
+      - spring
+    command: [ "start-dev" ]
+
   stream:
     image: 'xunterr/streamservice:latest'
     ports:
       - "8088:8080"
+      - "5005:5005"
     container_name: stream
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/streamplatform
@@ -67,7 +73,7 @@ services:
       - eureka
   rtmp:
     image: 'xunterr/nginx-rtmp-module:latest'
-    entrypoint: ["nginx", "-g", "daemon off;"]
+    entrypoint: [ "nginx", "-g", "daemon off;" ]
     ports:
       - "1935:1935"
       - "8086:8080"

@@ -55,18 +55,18 @@ class StreamServiceTest {
 
     @Test
     void canCreate() {
+        var userId = UUID.randomUUID();
         CreateStreamRequest request = new CreateStreamRequest(
-                UUID.randomUUID(),
                 "Test",
                 "Test",
                 false);
 
-        underTest.create(request);
+        underTest.create(request, userId);
 
         ArgumentCaptor<Stream> argumentCaptor = ArgumentCaptor.forClass(Stream.class);
         verify(repository).saveAndFlush(argumentCaptor.capture());
 
         Stream captured = argumentCaptor.getValue();
-        assertThat(captured.getUserID()).isEqualTo(request.getUserId());
+        assertThat(captured.getUserID()).isEqualTo(userId);
     }
 }

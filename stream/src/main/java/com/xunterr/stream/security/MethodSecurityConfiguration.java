@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @Configuration
 @EnableMethodSecurity
 @AllArgsConstructor
-public class MetodSecurityConfiguration {
+public class MethodSecurityConfiguration {
 
 	private final StreamPermissionEvaluator permissionEvaluator;
 

@@ -15,15 +15,6 @@ spring:
           enabled: true
           lowerCaseServiceId: true
       routes:
-        - id: users
-          uri: lb://user/
-          predicates:
-            - Path=/api/v1/users/**
-
-        - id: auth
-          uri: lb://user/
-          predicates:
-          - Path=/api/v1/auth/**
 
         - id: streams
           uri: lb://stream

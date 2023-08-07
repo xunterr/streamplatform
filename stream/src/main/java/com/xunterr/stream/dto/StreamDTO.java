@@ -1,4 +1,4 @@
-package com.xunterr.stream.service;
+package com.xunterr.stream.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,4 +26,7 @@ public class StreamDTO implements Serializable {
 
 	@NotNull
 	boolean autoDelete;
+
+	@NotNull
+	boolean isLive;
 }

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -47,7 +49,7 @@ public class StreamPermissionEvaluator implements PermissionEvaluator {
 	}
 
 	private boolean isResourceOwnedBy(Authentication auth, Object targetId){
-		UUID userID = (UUID) auth.getPrincipal();
+		UUID userID = UUID.fromString(auth.getName());
 		UUID resourceID = (UUID) targetId;
 
 		Stream resource = service.getById(resourceID);
