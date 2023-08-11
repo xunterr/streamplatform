@@ -4,7 +4,7 @@ The Video Stream Management API helps you manage video streams. This API is buil
 
 ## So, how it works?
 
-To create streams, users must first register in your system. Once a stream is created, the API provides a unique secret key required solely for initiating streams. When users go to the stream server to start a stream, your server should employ the API's callback. The API verifies stream information, and upon confirmation, it sends a public key to your server. This public key serves as the stream ID, which can subsequently be used to modify the stream URL, ensuring security against interception.
+To create streams, users must first register in your system. Once a stream is created, the API provides a unique one-off secret key for initiating streams. When users go to the stream server to start a stream, your server should use the API's callback. The API verifies stream information, it sends a public key to your server. This public key serves as the stream ID, which should be used to modify the stream URL, ensuring security against interception.
 
 *Note: The terms `secret key` and `public key` are used outside the RSA context, and no key-pair is generated.*
 
@@ -34,9 +34,11 @@ This project integrates components such as the Eureka discovery service and API 
 
 ## TODO: 
 
-[ ] Write a docs 
-[ ] Write tests
-[ ] Write adapters for different RTMP servers.
+- [ ] Write a docs 
+
+- [ ] Write tests
+
+- [ ] Write adapters for different RTMP servers.
 
 ## Contributing
 
